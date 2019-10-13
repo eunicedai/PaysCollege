@@ -1,0 +1,110 @@
+.font{
+    font-family: 'Acme', sans-serif;
+}
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    display: block;
+    position: relative;
+    margin: 0 auto;
+}
+.wrapper::after {
+    content: "";
+    background-image: url("salary_whisper.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -99;   
+}
+.header p{
+    color: white;
+    background: #236E6C;
+    font-size: 40px;
+    padding: 5%;
+    width: 600px;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+.header{
+    text-align: center;
+    padding-top: 3%;
+}
+.region::before{
+    content: "";
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #B75C5C;
+    position: relative;
+    top: 30px;
+    left: 30px;
+    z-index: -1;
+    box-shadow: 5px 3px 4px grey;
+}
+.degree::before{
+    content: "";
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #B75C5C;
+    position: relative;
+    top: 30px;
+    left: 30px;
+    z-index: -1;
+    box-shadow: 5px 3px 4px grey;
+}
+.region, .degree{
+    width: 100%;
+}
+.content{
+    text-align: center;
+}
+.list{
+    display: inline-flex;
+    font-size: 25px;
+    width: 100%;
+}
+a{
+    color: black;
+}
+a:hover{
+    color: khaki;
+}
+.searchbar{
+    margin-top: 3em;
+}
+.searchbar input{
+    background: #fff;
+    padding: 1em;
+    width: 40%;
+    border-radius: 10em;
+    transition: box-shadow 300ms ease;
+    margin: 0 auto;
+    border-style: none;
+    font-size: 1.3em;
+}
+.searchbar input:focus{
+    outline: none;  
+    box-shadow: 3px 6px 5px grey;
+    border: none;
+}
+.fa-search{
+    font-size: 2em;
+    margin-left: -50px;
+}
+.searchbar p{
+    margin-left: -22%;
+    font-size: 16px;
+    margin-bottom: 0.5%;
+}
