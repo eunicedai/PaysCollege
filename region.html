@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="all.css">
+    <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-database.js"></script>
+    <title>Salaies by Region</title>
+</head>
+<body>
+   <div class="wrapper font">
+        <div class="r_header">
+            <p><a href="index.html">Where it pays to attend College ?</a></p>
+        </div>
+        <div class="r_content">
+            <div class="r_list">
+                <p class="r_region"><a href="region.html">See salaries by Region</a></p>
+                <p class="r_degree"><a href="degree.html">See salaries by Degree</a></p>
+            </div>
+            <div class="data">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><span>Major</span></th>
+                            <th><span>Salary</span></th>
+                            <td>Mid-career Salary</td>
+                            <td>Percent change from Starting to Mid-career</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+   </div> 
+</body>
+</html>
+<script>
+    var config = {
+        apiKey: "AIzaSyCfRQOaTh4Av6tpWOy9GXqcITrNvjI0eSU",
+        authDomain: "inf551-f307e.firebaseapp.com",
+        databaseURL: "https://inf551-f307e.firebaseio.com",
+        projectId: "inf551-f307e",
+        storageBucket: "inf551-f307e.appspot.com",
+        messagingSenderId: "915763500864",
+        appId: "1:915763500864:web:7d0d89ec56d42b07c68ca5",
+        measurementId: "G-VB2MLB7VDD"
+    };
+
+    firebase.initializeApp(config);
+    var db = firebase.database();
+    var degree = db.ref('/degrees/');
+
+    degree.on('value', function(snapshot) { 
+        var djson = JSON.parse(JSON.stringify(snapshot.val()));
+        console.log(djson.Accounting);
+        //console.log("weather value" + ": " + snapshot.val());
+        // value.innerText = snapshot.val()
+    });
+</script>

@@ -108,3 +108,40 @@ a:hover{
     font-size: 16px;
     margin-bottom: 0.5%;
 }
+.r_header p{
+    color: white;
+    background: #236E6C;
+    font-size: 32px;
+    padding: 2%;
+}
+.r_list{
+    display: inline-flex;
+    /* text-align: right; */
+    float: right;
+    margin-top: -30px;
+    width: 35%;
+    font-size: 18px;
+    
+}
+.r_degree::before, .r_region::before{
+    content: "";
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #B75C5C;
+    position: relative;
+    top: 15px;
+    left: 15px;
+    z-index: -1;
+    box-shadow: 5px 3px 4px grey;
+}
+.r_region, .r_degree{
+    margin-right: 3%;
+}
+.r_header a{
+    text-decoration: none;
+    color: white;
+}
