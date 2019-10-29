@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="all.css">
-    <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Acme|Montserrat:300,600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-database.js"></script>
@@ -22,16 +22,24 @@
                 <p class="r_region"><a href="region.html">See salaries by Region</a></p>
                 <p class="r_degree"><a href="degree.html">See salaries by Degree</a></p>
             </div>
-            <div class="data">
-                <table>
+            <div class="clear"></div> 
+            <div class="data fontm">
+                <p class="d_title">See salaries by Degree</p>
+                <table  class="fontm">
                     <thead>
                         <tr>
-                            <th><span>Major</span></th>
-                            <th><span>Salary</span></th>
-                            <td>Mid-career Salary</td>
-                            <td>Percent change from Starting to Mid-career</td>
+                            <th>Major</th>
+                            <th>Starting Salary</th>
+                            <th>Mid-career Salary</th>
+                            <th>Percent change from Starting to Mid-career</th>
+                            <th>10th Percentile</th>
+                            <th>25th Percentile</th>
+                            <th>75th Percentile</th>
+                            <th>90th Percentile</th>
                         </tr>
                     </thead>
+                    <tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -53,11 +61,24 @@
     firebase.initializeApp(config);
     var db = firebase.database();
     var degree = db.ref('/degrees/');
+    var djson;
 
     degree.on('value', function(snapshot) { 
-        var djson = JSON.parse(JSON.stringify(snapshot.val()));
-        console.log(djson.Accounting);
-        //console.log("weather value" + ": " + snapshot.val());
-        // value.innerText = snapshot.val()
+        djson = JSON.parse(JSON.stringify(snapshot.val()));
+        console.log(djson);
+        var tr = "";
+        for(x in djson){
+            tr += "<tr>";
+            tr += "<td>"+x+"</td>";
+            tr += "<td>"+djson[x]["Starting Median Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career Median Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Percent change from Starting to Mid-Career Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 10th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 25th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 75th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 90th Percentile Salary"]+"</td>";
+            tr += "</tr>";
+        }
+        document.querySelector("table tbody").innerHTML = tr;
     });
 </script>

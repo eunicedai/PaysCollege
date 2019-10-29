@@ -1,6 +1,9 @@
 .font{
     font-family: 'Acme', sans-serif;
 }
+.fontm{
+    font-family: 'Montserrat', sans-serif;
+}
 .wrapper {
     width: 100%;
     height: 100vh;
@@ -144,4 +147,28 @@ a:hover{
 .r_header a{
     text-decoration: none;
     color: white;
+}
+.clear{
+    clear: both;
+}
+table{
+    background-color: cornsilk;
+    border-radius: 10px;
+    margin-left: 5%;
+    width: 90%;
+}
+th, td {
+    padding: .5em 1em;
+}
+thead{
+    color: darkblue;
+    font-size: 18px;
+}
+.data{
+    margin-top: 10%;
+}
+.d_title{
+    font-weight: 600;
+    font-size: 20px;
+    margin-left: 10%;
 }
