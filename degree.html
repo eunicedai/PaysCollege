@@ -6,7 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="all.css">
-    <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Acme|Montserrat:300,600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-database.js"></script>
     <title>Salaies by Region</title>
 </head>
 <body>
@@ -19,7 +22,154 @@
                 <p class="r_region"><a href="region.html">See salaries by Region</a></p>
                 <p class="r_degree"><a href="degree.html">See salaries by Degree</a></p>
             </div>
+            <div class="clear"></div> 
+            <div class="data fontm">
+                <p class="d_title">See salaries by Degree</p>
+                <table  class="fontm">
+                    <thead>
+                        <tr>
+                            <th>Major  <i class="fa fa-sort-up check" onclick="sortby(1, 1)"></i></th>
+                            <th>Starting Salary <i class = 'fa fa-sort' onclick="sortby(2, 0)"></i></th>
+                            <th>Mid-career Salary <i class = 'fa fa-sort' onclick="sortby(3, 0)"></i></th>
+                            <th>Percent change from Starting to Mid-career <i class = 'fa fa-sort' onclick="sortby(4, 0)"></i></th>
+                            <th>10th Percentile <i class = 'fa fa-sort' onclick="sortby(5, 0)"></i></th>
+                            <th>25th Percentile <i class = 'fa fa-sort' onclick="sortby(6, 0)"></i></th>
+                            <th>75th Percentile <i class = 'fa fa-sort' onclick="sortby(7, 0)"></i></th>
+                            <th>90th Percentile <i class = 'fa fa-sort' onclick="sortby(8, 0)"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
    </div> 
 </body>
 </html>
+<script>
+    var config = {
+        apiKey: "AIzaSyCfRQOaTh4Av6tpWOy9GXqcITrNvjI0eSU",
+        authDomain: "inf551-f307e.firebaseapp.com",
+        databaseURL: "https://inf551-f307e.firebaseio.com",
+        projectId: "inf551-f307e",
+        storageBucket: "inf551-f307e.appspot.com",
+        messagingSenderId: "915763500864",
+        appId: "1:915763500864:web:7d0d89ec56d42b07c68ca5",
+        measurementId: "G-VB2MLB7VDD"
+    };
+
+    var title = ["Major", "Starting Salary", "Mid-career Salary", 
+        "Percent change from Starting to Mid-career", "10th Percentile", "25th Percentile",
+        "75th Percentile", "90th Percentile"];
+    var dbtitle = ["", "Starting Median Salary", "Mid-Career Median Salary", 
+    "Percent change from Starting to Mid-Career Salary", "Mid-Career 10th Percentile Salary", 
+    "Mid-Career 25th Percentile Salary", "Mid-Career 75th Percentile Salary", "Mid-Career 90th Percentile Salary"]
+
+    firebase.initializeApp(config);
+    var db = firebase.database();
+    var degree = db.ref('/degrees/');
+    var djson;
+
+    degree.on('value', function(snapshot) { 
+        djson = JSON.parse(JSON.stringify(snapshot.val()));
+        console.log(djson);
+        var tr = "";
+        for(x in djson){
+            tr += "<tr>";
+            tr += "<td>"+x+"</td>";
+            tr += "<td>"+djson[x]["Starting Median Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career Median Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Percent change from Starting to Mid-Career Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 10th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 25th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 75th Percentile Salary"]+"</td>";
+            tr += "<td>"+djson[x]["Mid-Career 90th Percentile Salary"]+"</td>";
+            tr += "</tr>";
+        }
+        document.querySelector("table tbody").innerHTML = tr;
+    });
+
+    function sortby(num, way){
+        resetcolor();
+        if(title[num-1] === "Major"){
+            console.log(title[num]);
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a,b){return a - b});
+                console.log(keysSorted);
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        if(a < b) { return 1; }
+                                                        if(a > b) { return -1; }
+                                                        return 0;
+                                                    });
+                console.log(keysSorted);
+                change(num, 1, 0);
+            }
+        }else if(num != 4){
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        var a1 = djson[a][dbtitle[num-1]].split("$", 2)
+                                                        a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
+                                                        var b1 = djson[b][dbtitle[num-1]].split("$", 2)
+                                                        b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
+                                                        if(a1 < b1) { return -1; }
+                                                        if(a1 > b1) { return 1; }
+                                                        return 0;
+                                                    });
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        var a1 = djson[a][dbtitle[num-1]].split("$", 2)
+                                                        a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
+                                                        var b1 = djson[b][dbtitle[num-1]].split("$", 2)
+                                                        b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
+                                                        if(a1 < b1) { return 1; }
+                                                        if(a1 > b1) { return -1; }
+                                                        return 0;
+                                                    });
+                change(num, 1, 0);
+            }
+        }else{
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a,b){return djson[a][dbtitle[num-1]] - djson[b][dbtitle[num-1]]}); 
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a,b){return djson[b][dbtitle[num-1]] - djson[a][dbtitle[num-1]]});
+                change(num, 1, 0);
+            }
+        }
+        var list = "";
+        for(x in keysSorted){
+            list += "<tr>";
+            list += "<td>"+keysSorted[x]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Starting Median Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career Median Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Percent change from Starting to Mid-Career Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 10th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 25th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 75th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
+            list += "</tr>";
+        }
+        document.querySelector("table tbody").innerHTML = list;
+    }
+
+    function resetcolor(){
+        var thead = "";
+        for(i in title){
+            var num = parseInt(i)+1;
+            thead += "<th>"+title[i]+" <i class='fa fa-sort' onclick='sortby("+num+", 0)'></i></th>";
+        }
+        document.querySelector("table thead tr").innerHTML = thead;
+    }
+
+    function change(num, way1, way2){
+        if(way1 == 0){
+            way = "up";
+        }else{
+            way = "down";
+        }
+        document.querySelector("thead th:nth-child("+num+")").innerHTML = title[num-1]+' <i class="fa fa-sort-'+way+' check" onclick="sortby('+num+', '+way2+')"></i>';
+    }
+</script>

@@ -161,7 +161,7 @@ th, td {
     padding: .5em 1em;
 }
 thead{
-    color: darkblue;
+    color: darkolivegreen;
     font-size: 18px;
 }
 .data{
@@ -171,4 +171,7 @@ thead{
     font-weight: 600;
     font-size: 20px;
     margin-left: 10%;
+}
+.check{
+    color: darkorange;
 }

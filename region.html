@@ -24,14 +24,14 @@
             </div>
             <div class="clear"></div> 
             <div class="data fontm">
-                <p class="d_title">See salaries by Degree</p>
+                <p class="d_title">See salaries by Region</p>
                 <table  class="fontm">
                     <thead>
                         <tr>
-                            <th>Major</th>
+                            <th>School</th>
+                            <th>Region</th>
                             <th>Starting Salary</th>
                             <th>Mid-career Salary</th>
-                            <th>Percent change from Starting to Mid-career</th>
                             <th>10th Percentile</th>
                             <th>25th Percentile</th>
                             <th>75th Percentile</th>
@@ -60,7 +60,7 @@
 
     firebase.initializeApp(config);
     var db = firebase.database();
-    var degree = db.ref('/degrees/');
+    var degree = db.ref('/regions/');
     var djson;
 
     degree.on('value', function(snapshot) { 
@@ -70,9 +70,9 @@
         for(x in djson){
             tr += "<tr>";
             tr += "<td>"+x+"</td>";
+            tr += "<td>"+djson[x]["Region"]+"</td>";
             tr += "<td>"+djson[x]["Starting Median Salary"]+"</td>";
             tr += "<td>"+djson[x]["Mid-Career Median Salary"]+"</td>";
-            tr += "<td>"+djson[x]["Percent change from Starting to Mid-Career Salary"]+"</td>";
             tr += "<td>"+djson[x]["Mid-Career 10th Percentile Salary"]+"</td>";
             tr += "<td>"+djson[x]["Mid-Career 25th Percentile Salary"]+"</td>";
             tr += "<td>"+djson[x]["Mid-Career 75th Percentile Salary"]+"</td>";
