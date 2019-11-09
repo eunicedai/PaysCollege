@@ -175,3 +175,11 @@ thead{
 .check{
     color: darkorange;
 }
+i{
+    cursor: pointer;
+}
+.r_footer{
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}

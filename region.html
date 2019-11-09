@@ -28,20 +28,23 @@
                 <table  class="fontm">
                     <thead>
                         <tr>
-                            <th>School</th>
-                            <th>Region</th>
-                            <th>Starting Salary</th>
-                            <th>Mid-career Salary</th>
-                            <th>10th Percentile</th>
-                            <th>25th Percentile</th>
-                            <th>75th Percentile</th>
-                            <th>90th Percentile</th>
+                            <th>School <i class="fa fa-sort-up check" onclick="sortby(1, 1)"></i></th>
+                            <th>Region <i class = 'fa fa-sort' onclick="sortby(2, 0)"></i></th>
+                            <th>Starting Salary <i class = 'fa fa-sort' onclick="sortby(3, 0)"></i></th>
+                            <th>Mid-career Salary <i class = 'fa fa-sort' onclick="sortby(4, 0)"></i></th>
+                            <th>10th Percentile <i class = 'fa fa-sort' onclick="sortby(5, 0)"></i></th>
+                            <th>25th Percentile <i class = 'fa fa-sort' onclick="sortby(6, 0)"></i></th>
+                            <th>75th Percentile <i class = 'fa fa-sort' onclick="sortby(7, 0)"></i></th>
+                            <th>90th Percentile <i class = 'fa fa-sort' onclick="sortby(8, 0)"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="r_footer">
+            <p class="fontm">Eunice and Mandy@CopyRight</p>
         </div>
    </div> 
 </body>
@@ -57,6 +60,12 @@
         appId: "1:915763500864:web:7d0d89ec56d42b07c68ca5",
         measurementId: "G-VB2MLB7VDD"
     };
+
+    var title = ["School", "Region", "Starting Salary", "Mid-career Salary", "10th Percentile", 
+    "25th Percentile", "75th Percentile", "90th Percentile"];
+    var dbtitle = ["", "Region", "Starting Median Salary", "Mid-Career Median Salary",
+    "Mid-Career 10th Percentile Salary", "Mid-Career 25th Percentile Salary", "Mid-Career 75th Percentile Salary",
+    "Mid-Career 90th Percentile Salary"];
 
     firebase.initializeApp(config);
     var db = firebase.database();
@@ -81,4 +90,112 @@
         }
         document.querySelector("table tbody").innerHTML = tr;
     });
+
+    function sortby(num, way){
+        resetcolor();
+        if(num == 2){
+            console.log(title[num]);
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        if(djson[a][dbtitle[num-1]] < djson[b][dbtitle[num-1]]) { return -1; }
+                                                        if(djson[a][dbtitle[num-1]] > djson[b][dbtitle[num-1]]) { return 1; }
+                                                        return 0;
+                                                    });
+                console.log(keysSorted);
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        if(djson[a][dbtitle[num-1]] < djson[b][dbtitle[num-1]]) { return 1; }
+                                                        if(djson[a][dbtitle[num-1]] > djson[b][dbtitle[num-1]]) { return -1; }
+                                                        return 0;
+                                                    });
+                console.log(keysSorted);
+                change(num, 1, 0);
+            }
+        }else if(num == 1){
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a,b){return a - b});
+                console.log(keysSorted);
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        if(a < b) { return 1; }
+                                                        if(a > b) { return -1; }
+                                                        return 0;
+                                                    });
+                console.log(keysSorted);
+                change(num, 1, 0);
+            } 
+        }else{
+            if(way == 0){
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        var a1 = djson[a][dbtitle[num-1]]
+                                                        var b1 = djson[b][dbtitle[num-1]]
+                                                        if(a1 != "null"){
+                                                            a1 = a1.split("$", 2)
+                                                            a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
+                                                        }else{ a1 = 0 }
+                                                        if(b1 != "null"){
+                                                            b1 = b1.split("$", 2)
+                                                            b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
+                                                        }else{ b1 = 0}
+                                                        if(a1 < b1) { return -1; }
+                                                        if(a1 > b1) { return 1; }
+                                                        return 0;
+                                                    });
+                change(num, 0, 1);
+            }else{
+                keysSorted = Object.keys(djson).sort(function(a, b){
+                                                        var a1 = djson[a][dbtitle[num-1]]
+                                                        var b1 = djson[b][dbtitle[num-1]]
+                                                        if(a1 != "null"){
+                                                            a1 = a1.split("$", 2)
+                                                            a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
+                                                        }else{ a1 = 0 }
+                                                        if(b1 != "null"){
+                                                            b1 = b1.split("$", 2)
+                                                            b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
+                                                        }else{ b1 = 0 }
+                                                        if(a1 < b1) { return 1; }
+                                                        if(a1 > b1) { return -1; }
+                                                        return 0;
+                                                    });
+                change(num, 1, 0);
+            }
+        }
+
+        var list = "";
+        for(x in keysSorted){
+            list += "<tr>";
+            list += "<td>"+keysSorted[x]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Region"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Starting Median Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career Median Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 10th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 25th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 75th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[keysSorted[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
+            list += "</tr>";
+        }
+        document.querySelector("table tbody").innerHTML = list;
+    }
+
+    function resetcolor(){
+        var thead = "";
+        for(i in title){
+            var num = parseInt(i)+1;
+            thead += "<th>"+title[i]+" <i class='fa fa-sort' onclick='sortby("+num+", 0)'></i></th>";
+        }
+        document.querySelector("table thead tr").innerHTML = thead;
+    }
+
+    function change(num, way1, way2){
+        if(way1 == 0){
+            way = "up";
+        }else{
+            way = "down";
+        }
+        document.querySelector("thead th:nth-child("+num+")").innerHTML = title[num-1]+' <i class="fa fa-sort-'+way+' check" onclick="sortby('+num+', '+way2+')"></i>';
+    }
+
 </script>
