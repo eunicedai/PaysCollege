@@ -21,7 +21,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    position: absolute;
+    position: fixed;
     z-index: -99;   
 }
 .header p{
@@ -182,4 +182,20 @@ i{
     text-align: center;
     margin-top: 5%;
     margin-bottom: 5%;
+}
+.fa-chart-bar{
+    margin-left: 5px;
+    background: black;
+    color: white;
+    padding: 3px 5px;
+    border-radius: 8px;
+}
+.chart_div{
+    margin-left: 15%;
+    display: none;
+}
+.fa-angle-double-right{
+    font-size: 35px;
+    color: darkslategray;
+    margin-top: 10%;
 }
