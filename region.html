@@ -10,6 +10,8 @@
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-database.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="chart.js"></script>
     <title>Salaies by Region</title>
 </head>
 <body>
@@ -24,7 +26,12 @@
             </div>
             <div class="clear"></div> 
             <div class="data fontm">
-                <p class="d_title">See salaries by Region <i class="fas fa-chart-bar"></i></p>
+                <p class="d_title">See salaries by Region <i class="fas fa-chart-bar" onclick="openwin()"></i></p>
+                <div class="chart_div">
+                        <div id="chart">
+                        </div>
+                        <i class="fas fa-angle-double-right" onclick="change_chart()"></i>
+                    </div>
                 <table  class="fontm">
                     <thead>
                         <tr>
@@ -66,11 +73,23 @@
     var dbtitle = ["", "Region", "Starting Median Salary", "Mid-Career Median Salary",
     "Mid-Career 10th Percentile Salary", "Mid-Career 25th Percentile Salary", "Mid-Career 75th Percentile Salary",
     "Mid-Career 90th Percentile Salary"];
+    var chtitle = ["Starting Median Salary", "Mid-Career Median Salary", 
+    "Mid-Career 10th Percentile Salary", "Mid-Career 25th Percentile Salary", "Mid-Career 75th Percentile Salary",
+    "Mid-Career 90th Percentile Salary"];
 
     firebase.initializeApp(config);
     var db = firebase.database();
     var degree = db.ref('/regions/');
     var djson;
+    var start_s = [];
+    var mid_s = [];
+    var ten_s = [];
+    var tw_s = [];
+    var sev_s = [];
+    var nin_s = [];
+    var all = [];
+    var win = "close";
+    var ch = 0;
 
     degree.on('value', function(snapshot) { 
         djson = JSON.parse(JSON.stringify(snapshot.val()));
@@ -87,9 +106,51 @@
             tr += "<td>"+djson[x]["Mid-Career 75th Percentile Salary"]+"</td>";
             tr += "<td>"+djson[x]["Mid-Career 90th Percentile Salary"]+"</td>";
             tr += "</tr>";
+            
+            var temp = djson[x]["Starting Median Salary"].split("$", 2);
+            start_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            var temp = djson[x]["Mid-Career Median Salary"].split("$", 2);
+            mid_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            if(djson[x]["Mid-Career 10th Percentile Salary"] != "null"){
+                var temp = djson[x]["Mid-Career 10th Percentile Salary"].split("$", 2);
+                ten_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            } 
+            var temp = djson[x]["Mid-Career 25th Percentile Salary"].split("$", 2);
+            tw_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            var temp = djson[x]["Mid-Career 75th Percentile Salary"].split("$", 2);
+            sev_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            if(djson[x]["Mid-Career 90th Percentile Salary"] != "null"){
+                var temp = djson[x]["Mid-Career 90th Percentile Salary"].split("$", 2);
+                nin_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+            }
         }
         document.querySelector("table tbody").innerHTML = tr;
+        all.push(start_s);
+        all.push(mid_s);
+        all.push(ten_s);
+        all.push(tw_s);
+        all.push(sev_s);
+        all.push(nin_s);
+        chart(start_s, "Starting Median Salary");
     });
+
+    function openwin(){
+        if(win === "close"){
+            win = "open";
+            document.querySelector(".chart_div").style.display = "inline-flex";
+        }else{
+            win = "close";
+            document.querySelector(".chart_div").style.display = "none";
+        }
+    }
+
+    function change_chart(){
+        chart(all[ch], chtitle[ch]);
+        ch++;
+        if(ch > 5){
+            ch = 0;
+        }
+    }
 
     function sortby(num, way){
         resetcolor();
