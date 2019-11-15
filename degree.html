@@ -10,9 +10,9 @@
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-database.js"></script>
-    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
     <script src="chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
     <title>Salaies by Region</title>
 </head>
 <body>
@@ -27,7 +27,29 @@
             </div>
             <div class="clear"></div> 
             <div class="data fontm">
-                <p class="d_title">See salaries by Degree <i class="fas fa-chart-bar" onclick="openwin()"></i></p>
+                <p class="d_title">See salaries by Degree 
+                    <i class="fas fa-filter" onclick="clickfilter()"></i>
+                    <i class="fas fa-chart-bar" onclick="openwin()"></i>
+                    <i class="fas fa-undo-alt" onclick="reset()"></i>
+                    <div class="popup hide">
+                        <form>
+                            <select name="kind" id="sel" onChange="change_detect()">
+                                <option value="Major">Major</option>
+                                <option value="Starting Median Salary">Starting Salary</option>
+                                <option value="Mid-Career Median Salary">Mid-Career Salary</option>
+                            </select>
+                            <div class="popshow">
+                                <input type="text" class="text1">
+                            </div>
+                            <div class="slider">
+                                <input type="number" class="num1" min="1000" value="1000"> ～ 
+                                <input type="number" class="num2">
+                            </div>
+                            <p class="submit" onclick="datafilter(djson, 'degree')">Submit</p>
+                        </form>
+                        
+                    </div>
+                </p>
                 <div class="chart_div">
                     <div id="chart">
                     </div>
@@ -58,6 +80,7 @@
 </body>
 </html>
 <script>
+
     var config = {
         apiKey: "AIzaSyCfRQOaTh4Av6tpWOy9GXqcITrNvjI0eSU",
         authDomain: "inf551-f307e.firebaseapp.com",
@@ -92,11 +115,16 @@
     var all = [];
     var win = "close";
     var ch = 0;
+    var hide = true;
+    var tr = "";
+    var tempdata = {};
+    var state = "dj";
+    var data;
 
     degree.on('value', function(snapshot) { 
         djson = JSON.parse(JSON.stringify(snapshot.val()));
         console.log(djson);
-        var tr = "";
+        tr = "";
         for(x in djson){
             tr += "<tr>";
             tr += "<td>"+x+"</td>";
@@ -153,26 +181,23 @@
     function sortby(num, way){
         resetcolor();
         if(title[num-1] === "Major"){
-            console.log(title[num]);
             if(way == 0){
-                keysSorted = Object.keys(djson).sort(function(a,b){return a - b});
-                console.log(keysSorted);
+                keysSorted = Object.keys(data).sort(function(a,b){return a - b});
                 change(num, 0, 1);
             }else{
-                keysSorted = Object.keys(djson).sort(function(a, b){
+                keysSorted = Object.keys(data).sort(function(a, b){
                                                         if(a < b) { return 1; }
                                                         if(a > b) { return -1; }
                                                         return 0;
                                                     });
-                console.log(keysSorted);
                 change(num, 1, 0);
             }
         }else if(num != 4){
             if(way == 0){
-                keysSorted = Object.keys(djson).sort(function(a, b){
-                                                        var a1 = djson[a][dbtitle[num-1]].split("$", 2)
+                keysSorted = Object.keys(data).sort(function(a, b){
+                                                        var a1 = data[a][dbtitle[num-1]].split("$", 2)
                                                         a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
-                                                        var b1 = djson[b][dbtitle[num-1]].split("$", 2)
+                                                        var b1 = data[b][dbtitle[num-1]].split("$", 2)
                                                         b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
                                                         if(a1 < b1) { return -1; }
                                                         if(a1 > b1) { return 1; }
@@ -180,10 +205,10 @@
                                                     });
                 change(num, 0, 1);
             }else{
-                keysSorted = Object.keys(djson).sort(function(a, b){
-                                                        var a1 = djson[a][dbtitle[num-1]].split("$", 2)
+                keysSorted = Object.keys(data).sort(function(a, b){
+                                                        var a1 = data[a][dbtitle[num-1]].split("$", 2)
                                                         a1 = parseInt(a1[1].replace(/[^\w\s]|_/g, ""))
-                                                        var b1 = djson[b][dbtitle[num-1]].split("$", 2)
+                                                        var b1 = data[b][dbtitle[num-1]].split("$", 2)
                                                         b1 = parseInt(b1[1].replace(/[^\w\s]|_/g, ""))
                                                         if(a1 < b1) { return 1; }
                                                         if(a1 > b1) { return -1; }
@@ -193,24 +218,25 @@
             }
         }else{
             if(way == 0){
-                keysSorted = Object.keys(djson).sort(function(a,b){return djson[a][dbtitle[num-1]] - djson[b][dbtitle[num-1]]}); 
+                keysSorted = Object.keys(data).sort(function(a,b){return data[a][dbtitle[num-1]] - data[b][dbtitle[num-1]]}); 
                 change(num, 0, 1);
             }else{
-                keysSorted = Object.keys(djson).sort(function(a,b){return djson[b][dbtitle[num-1]] - djson[a][dbtitle[num-1]]});
+                keysSorted = Object.keys(data).sort(function(a,b){return data[b][dbtitle[num-1]] - data[a][dbtitle[num-1]]});
                 change(num, 1, 0);
             }
         }
+        console.log(keysSorted)
         var list = "";
         for(x in keysSorted){
             list += "<tr>";
             list += "<td>"+keysSorted[x]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Starting Median Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Mid-Career Median Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Percent change from Starting to Mid-Career Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Mid-Career 10th Percentile Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Mid-Career 25th Percentile Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Mid-Career 75th Percentile Salary"]+"</td>";
-            list += "<td>"+djson[keysSorted[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Starting Median Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Mid-Career Median Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Percent change from Starting to Mid-Career Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Mid-Career 10th Percentile Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Mid-Career 25th Percentile Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Mid-Career 75th Percentile Salary"]+"</td>";
+            list += "<td>"+data[keysSorted[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
             list += "</tr>";
         }
         document.querySelector("table tbody").innerHTML = list;

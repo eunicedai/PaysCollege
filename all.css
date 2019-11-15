@@ -199,3 +199,53 @@ i{
     color: darkslategray;
     margin-top: 10%;
 }
+.popup{
+    position: absolute;
+    width: 200px;
+    margin-left: 30%;
+    margin-top: -1%;
+    background: white;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 3px 3px 3px grey;
+    text-align: center;
+    padding-top: 2%;
+}
+.hide{
+    -webkit-transition: opacity 600ms, visibility 600ms;
+    transition: opacity 600ms, visibility 600ms;
+    opacity: 0;
+    visibility: hidden;
+}
+.show{
+    visibility: visible;
+    opacity: 1;
+}
+.popup select{
+    border: none;
+    font-size: 16px;
+    text-indent: 3px;
+    margin-bottom: 13px;
+    width: 80%;
+}
+.popshow input{
+    font-size: 16px;
+    width: 70%;
+}
+.submit{
+    background: cadetblue;
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 5%;
+    margin-top: 10%;
+    padding: 5px 15px;
+    color: white;
+    cursor: pointer;
+}
+.slider input{
+    width: 30%;
+}
+
+.slider{
+    display: none;
+}
