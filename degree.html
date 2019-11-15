@@ -150,6 +150,7 @@
             var temp = djson[x]["Mid-Career 90th Percentile Salary"].split("$", 2);
             nin_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
         }
+        data = djson;
         document.querySelector("table tbody").innerHTML = tr;
         all.push(start_s);
         all.push(mid_s);

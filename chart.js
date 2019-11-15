@@ -35,6 +35,10 @@ function datafilter(djson, table){
             return key.toLowerCase().includes(val1.toLowerCase());
         });
         console.log(filtered);
+    }else if(choose == "Region"){
+        var filtered = Object.keys(djson).filter(function(key){
+            return djson[key][choose].toLowerCase().includes(val1.toLowerCase());
+        });
     }else{
         var filtered = Object.keys(djson).filter(function(key){
             var temp = djson[key][choose].split("$", 2);
@@ -60,6 +64,20 @@ function datafilter(djson, table){
             list += "<td>"+djson[filtered[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
             list += "</tr>";
         }
+    }else{
+        for(x in filtered){
+            tempdata[filtered[x]] = djson[filtered[x]];
+            list += "<tr>";
+            list += "<td>"+filtered[x]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Region"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Starting Median Salary"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Mid-Career Median Salary"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Mid-Career 10th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Mid-Career 25th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Mid-Career 75th Percentile Salary"]+"</td>";
+            list += "<td>"+djson[filtered[x]]["Mid-Career 90th Percentile Salary"]+"</td>";
+            list += "</tr>";
+        }
     }
     data = tempdata;
     document.querySelector("table tbody").innerHTML = list;
@@ -70,7 +88,7 @@ function datafilter(djson, table){
 
 function change_detect(){
     var choose = sel.options[sel.selectedIndex].text;
-    if(choose == "Major"){
+    if(choose == "Major" || choose == "School" || choose == "Region"){
         document.querySelector(".slider").style.display = "none";
         document.querySelector(".popshow").style.display = "block";
     }else{
@@ -100,18 +118,22 @@ function reset(){
 function reload(){
     start_s = [], mid_s = [], ten_s = [], tw_s = [], sev_s = [], nin_s = [], all = [];
     for(x in data){
-        var temp = data[x]["Starting Median Salary"].split("$", 2);
+        var temp = djson[x]["Starting Median Salary"].split("$", 2);
         start_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
-        var temp = data[x]["Mid-Career Median Salary"].split("$", 2);
+        var temp = djson[x]["Mid-Career Median Salary"].split("$", 2);
         mid_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
-        var temp = data[x]["Mid-Career 10th Percentile Salary"].split("$", 2);
-        ten_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
-        var temp = data[x]["Mid-Career 25th Percentile Salary"].split("$", 2);
+        if(djson[x]["Mid-Career 10th Percentile Salary"] != "null"){
+            var temp = djson[x]["Mid-Career 10th Percentile Salary"].split("$", 2);
+            ten_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+        } 
+        var temp = djson[x]["Mid-Career 25th Percentile Salary"].split("$", 2);
         tw_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
-        var temp = data[x]["Mid-Career 75th Percentile Salary"].split("$", 2);
+        var temp = djson[x]["Mid-Career 75th Percentile Salary"].split("$", 2);
         sev_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
-        var temp = data[x]["Mid-Career 90th Percentile Salary"].split("$", 2);
-        nin_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+        if(djson[x]["Mid-Career 90th Percentile Salary"] != "null"){
+            var temp = djson[x]["Mid-Career 90th Percentile Salary"].split("$", 2);
+            nin_s.push(parseInt(temp[1].replace(/[^\w\s]|_/g, "")));
+        }
     }
     all.push(start_s);
     all.push(mid_s);

@@ -210,6 +210,7 @@ i{
     box-shadow: 3px 3px 3px grey;
     text-align: center;
     padding-top: 2%;
+    z-index: 3;
 }
 .hide{
     -webkit-transition: opacity 600ms, visibility 600ms;
